@@ -77,7 +77,8 @@ flutter:
     - assets/Logo.png
     - assets/spot.png
     - assets/log.png
-
+    - assets/tik.png
+    - assets/chek.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

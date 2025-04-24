@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets_home/Feature_item.dart';
 import 'widgets_home/vehicle_card.dart';
-import 'widgets_home/parking_spot_card.dart';
 import 'widgets_home/wallet_card.dart';
 import 'package:parkirtime/screens/my_car/manage_vehicle_page.dart';
 import 'package:parkirtime/screens/reservation/checklotpage.dart';
@@ -71,7 +70,7 @@ class HomePageContent extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   FeatureItem(
-                    imagePath: 'assets/check_lot.png',
+                    imagePath: 'assets/chek.png',
                     title: "Check Lot",
                     onTap:
                         () => Navigator.push(
@@ -80,20 +79,20 @@ class HomePageContent extends StatelessWidget {
                         ),
                   ),
                   FeatureItem(
-                    imagePath: 'assets/ticket.png',
+                    imagePath: 'assets/reservation.png',
+                    title: "Reservation",
+                    onTap: () {
+                      // Coming soon or open reservation page
+                    },
+                  ),
+                  FeatureItem(
+                    imagePath: 'assets/tik.png',
                     title: "Ticket",
                     onTap:
                         () => Navigator.push(
                           context,
                           MaterialPageRoute(builder: (_) => TicketPage()),
                         ),
-                  ),
-                  FeatureItem(
-                    imagePath: 'assets/reservation.png',
-                    title: "Reservation",
-                    onTap: () {
-                      // Coming soon or open reservation page
-                    },
                   ),
                 ],
               ),
@@ -134,7 +133,7 @@ class HomePageContent extends StatelessWidget {
             const VehicleCard(),
             const SizedBox(height: 25),
 
-            // Parking Spot Section
+            // Parking Spot
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: const Text(
@@ -144,21 +143,71 @@ class HomePageContent extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Container(
-              height: 150,
+              height: 160,
               padding: const EdgeInsets.only(left: 20),
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                children: const [
-                  ParkingSpotCard("Mega mall"),
-                  SizedBox(width: 15),
-                  ParkingSpotCard("Poltek Batam"),
-                  SizedBox(width: 15),
-                  ParkingSpotCard("Shopping Center"),
+                children: [
+                  _buildParkingCard("Mega Mall", 31),
+                  const SizedBox(width: 15),
+                  _buildParkingCard("Grand Mall", 12),
+                  const SizedBox(width: 15),
+                  _buildParkingCard("Nagoya Hill", 7),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildParkingCard(String title, int available) {
+    return Container(
+      width: 130,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade300,
+            blurRadius: 6,
+            offset: Offset(0, 3),
+          ),
+        ],
+        color: Colors.white,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Replace with actual map/image asset
+          Container(
+            height: 90,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/map_sample.png"),
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Available $available",
+                  style: const TextStyle(color: Colors.green),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
