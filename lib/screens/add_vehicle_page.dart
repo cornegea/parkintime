@@ -29,7 +29,7 @@ class AddVehiclePage extends StatelessWidget {
                 ),
                 SizedBox(width: 8),
                 Text(
-                  "Add Vehicle",
+                  "Add ",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
