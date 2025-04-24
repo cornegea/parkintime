@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:parkirtime/screens/parking_lot_detail_page.dart';
+import 'package:parkirtime/screens/spot_parkir.dart';
 
 class BookParkingDetailsPage extends StatefulWidget {
   final int pricePerHour; // misal 5000

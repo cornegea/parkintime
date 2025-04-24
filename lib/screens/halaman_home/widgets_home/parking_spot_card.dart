@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkirtime/screens/parking_lot_detail_page.dart'; // Tambahkan ini
+import 'package:parkirtime/screens/spot_parkir.dart'; // Tambahkan ini
 
 class ParkingSpotCard extends StatelessWidget {
   final String name;

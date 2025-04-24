@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'historyscreen.dart';
-import 'profilescreen.dart';
+import 'package:parkirtime/screens/history/historyscreen.dart';
+import 'package:parkirtime/screens/profilescreen.dart';
 import 'home_page_content.dart';
 
 class HomeScreen extends StatefulWidget {

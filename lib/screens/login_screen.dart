@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'register_screen.dart';
-import 'home_screen.dart';
+import 'halaman_home/home_screen.dart';
 
 void main() {
   runApp(MaterialApp(debugShowCheckedModeBanner: false, home: LoginScreen()));
