@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkirtime/screens/book_parking.dart';
+import 'package:parkirtime/screens/reservation/book_parking.dart';
 
 class SelectVehiclePage extends StatefulWidget {
   @override

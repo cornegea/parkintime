@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkirtime/screens/manage_car.dart';
+import 'package:parkirtime/screens/my_car/manage_car.dart';
 
 class ManageVehiclePage extends StatefulWidget {
   @override

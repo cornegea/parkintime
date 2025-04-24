@@ -4,9 +4,9 @@ import 'screens/halaman_home/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/splash_screen.dart';
-import 'screens/historyscreen.dart'; // Tambahkan HistoryScreen
-import 'screens/mycarscreen.dart'; // Tambahkan MyCarScreen
-import 'screens/profilescreen.dart'; // Tambahkan ProfileScreen
+import 'screens/history/historyscreen.dart'; // Tambahkan HistoryScreen
+import 'screens/my_car/mycarscreen.dart'; // Tambahkan MyCarScreen
+import 'screens/profil/profilescreen.dart'; // Tambahkan ProfileScreen
 
 
 void main() {

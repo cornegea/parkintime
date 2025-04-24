@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkirtime/screens/select_vehicle.dart';
+import 'package:parkirtime/screens/reservation/select_vehicle.dart';
 
 class CheckLotPage extends StatelessWidget {
   final List<Map<String, dynamic>> parkingSpots = List.generate(4, (index) {

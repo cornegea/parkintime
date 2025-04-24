@@ -4,7 +4,7 @@ import 'widgets_home/vehicle_card.dart';
 import 'widgets_home/parking_spot_card.dart';
 import 'widgets_home/wallet_card.dart';
 import 'package:parkirtime/screens/my_car/manage_vehicle_page.dart';
-import 'package:parkirtime/screens/checklotpage.dart';
+import 'package:parkirtime/screens/reservation/checklotpage.dart';
 import 'package:parkirtime/screens/ticket_page.dart';
 
 class HomePageContent extends StatelessWidget {
