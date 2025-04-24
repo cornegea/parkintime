@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
@@ -11,7 +10,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final nameController = TextEditingController();
-  final phoneController = TextEditingController();
+  final emailController = TextEditingController(); // Ganti dari phone
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
@@ -20,7 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> registerUser() async {
     if (nameController.text.isEmpty ||
-        phoneController.text.isEmpty ||
+        emailController.text.isEmpty ||
         passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
       ScaffoldMessenger.of(
@@ -44,7 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "name": nameController.text,
-          "phone": phoneController.text,
+          "email": emailController.text,
           "password": passwordController.text,
         }),
       );
@@ -95,17 +94,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              IntlPhoneField(
+              TextField(
+                controller: emailController,
                 decoration: InputDecoration(
-                  hintText: 'Phone Number',
+                  hintText: 'Email',
+                  prefixIcon: Icon(Icons.email),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                initialCountryCode: 'ID',
-                onChanged: (phone) {
-                  phoneController.text = phone.completeNumber;
-                },
+                keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16),
               TextField(
@@ -160,7 +158,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: ElevatedButton(
                   onPressed: registerUser,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF2ECC40), // Warna hijau cerah
+                    backgroundColor: Color(0xFF2ECC40),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

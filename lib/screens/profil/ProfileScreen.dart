@@ -1,84 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:parkirtime/screens/profil/edit_profile_screen.dart';
+import 'package:parkirtime/screens/profil/change_password_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5),
+      backgroundColor: Color(0xFFF3F3F3),
       body: Column(
         children: [
-          // Header hijau dengan foto profil dan nama
+          // Header hijau
           Container(
             width: double.infinity,
-            color: Colors.green,
-            padding: const EdgeInsets.only(top: 60, bottom: 0),
+            color: Color(0xFF2ECC40),
+            padding: const EdgeInsets.only(top: 60, bottom: 20),
             child: Column(
               children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Colors.grey.shade300,
-                  child: Icon(Icons.person, size: 50, color: Colors.white),
-                ),
-                SizedBox(height: 10),
+                CircleAvatar(radius: 40, backgroundColor: Colors.grey.shade300),
+                const SizedBox(height: 10),
                 Text(
                   "Ayang",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
                   "6281234567890",
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                  style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
             ),
           ),
 
-          // Card Menu
+          // Card menu
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Card(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6,
+                    offset: Offset(0, 3),
+                  ),
+                ],
               ),
               child: Column(
                 children: [
-                  _buildMenuItem(Icons.edit, "Edit Profile", () {}),
+                  _buildMenuItem(Icons.edit, "Edit Profile", () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfileScreen(),
+                      ),
+                    );
+                  }),
                   Divider(height: 1),
-                  _buildMenuItem(Icons.lock_outline, "Change Password", () {}),
+                  _buildMenuItem(Icons.lock_outline, "Change Password", () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChangePasswordScreen(),
+                      ),
+                    );
+                  }),
+
                   Divider(height: 1),
-                  _buildMenuItem(Icons.directions_car, "My Vehicle", () {}),
+                  _buildMenuItem(Icons.directions_car_filled, "My Car", () {}),
                 ],
               ),
             ),
           ),
 
-          // Logout Button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Aksi log out di sini
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  "Log Out",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-            ),
-          ),
+          Spacer(),
         ],
       ),
     );

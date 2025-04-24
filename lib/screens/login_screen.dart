@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'register_screen.dart';
 import 'halaman_home/home_screen.dart';
 
@@ -13,8 +12,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  String phoneNumber = '';
   bool _obscureText = true;
 
   @override
@@ -27,19 +26,16 @@ class _LoginScreenState extends State<LoginScreen> {
             height: MediaQuery.of(context).size.height * 0.5,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  "assets/parking_background.png",
-                ), // Sesuaikan dengan path gambar Anda
+                image: AssetImage("assets/parking_background.png"),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(
-                    0.2,
-                  ), // Meningkatkan kontras agar lebih jelas
+                  Colors.black.withOpacity(0.2),
                   BlendMode.darken,
                 ),
               ),
             ),
           ),
+
           // Scrollable Content
           SingleChildScrollView(
             child: Column(
@@ -49,12 +45,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Logo
                 Center(
                   child: Image.asset(
-                    'assets/Logo.png', // Ganti dengan logo kamu
+                    'assets/Logo.png',
                     width: 120,
                     height: 120,
                   ),
                 ),
-
                 SizedBox(height: 90),
 
                 // Login Form
@@ -87,20 +82,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizedBox(height: 20),
 
-                      // Input No HP
-                      IntlPhoneField(
+                      // Input Email
+                      TextField(
+                        controller: emailController,
                         decoration: InputDecoration(
-                          hintText: 'Phone Number',
+                          hintText: 'Email',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           filled: true,
                           fillColor: Colors.white,
+                          prefixIcon: Icon(Icons.email),
                         ),
-                        initialCountryCode: 'ID',
-                        onChanged: (phone) {
-                          phoneNumber = phone.completeNumber;
-                        },
+                        keyboardType: TextInputType.emailAddress,
                       ),
                       SizedBox(height: 15),
 
