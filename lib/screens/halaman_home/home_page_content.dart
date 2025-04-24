@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'widgets_home/Feature_item.dart';
 import 'widgets_home/vehicle_card.dart';
 import 'widgets_home/wallet_card.dart';
-import 'package:parkirtime/screens/my_car/manage_vehicle_page.dart';
+import 'package:parkirtime/screens/my_car/mycar_page.dart';
 import 'package:parkirtime/screens/reservation/checklotpage.dart';
 import 'package:parkirtime/screens/ticket_page.dart';
 
@@ -81,9 +81,11 @@ class HomePageContent extends StatelessWidget {
                   FeatureItem(
                     imagePath: 'assets/reservation.png',
                     title: "Reservation",
-                    onTap: () {
-                      // Coming soon or open reservation page
-                    },
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => CheckLotPage()),
+                        ),
                   ),
                   FeatureItem(
                     imagePath: 'assets/tik.png',
@@ -184,7 +186,7 @@ class HomePageContent extends StatelessWidget {
             height: 90,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/map_sample.png"),
+                image: AssetImage("assets/spot.png"),
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.vertical(top: Radius.circular(12)),

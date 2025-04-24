@@ -16,51 +16,61 @@ class _HistoryScreenState extends State<HistoryScreen> {
       backgroundColor: Color(0xFFF5F5F5),
       body: Column(
         children: [
-          // AppBar Hijau
+          // ✅ AppBar Hijau (HANYA AppBar)
           Container(
-            height: 170,
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            height: 100,
+            width: double.infinity,
             color: Colors.green,
-            child: Column(
-              children: [
-                SizedBox(height: 70),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(filters.length, (index) {
-                    final isSelected = _selectedIndex == index;
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedIndex = index;
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 6,
-                          horizontal: 14,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isSelected ? Colors.green : Colors.white,
-                          border: Border.all(color: Colors.green),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          filters[index],
-                          style: TextStyle(
-                            color: isSelected ? Colors.white : Colors.green,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Text(
+                "History",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(height: 25),
-              ],
+              ),
             ),
           ),
 
-          // Konten berdasarkan tab
+          // ✅ Tab Menu di BAWAH AppBar
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(filters.length, (index) {
+                final isSelected = _selectedIndex == index;
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.green : Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.green),
+                    ),
+                    child: Text(
+                      filters[index],
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.green,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+
+          Divider(height: 1, thickness: 1),
+
           Expanded(child: _buildContentForTab()),
         ],
       ),
@@ -85,7 +95,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       padding: EdgeInsets.all(20),
       children: [
         _buildHistoryCard(
-          invoice: "INVOICE-1",
+          ticket: "TICKET-1",
           date: "7 June 2025 - 10.00",
           location: "Mega Mall Batam",
           floor: "1st Floor",
@@ -93,6 +103,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
           duration: "3 Hours",
           statusWidget: _buildStatusBox(
             "Valid until\n7 June 2025\n13.00",
+            Colors.blue,
+            Colors.white,
+            isValid: true,
+          ),
+        ),
+        _buildHistoryCard(
+          ticket: "TICKET-2",
+          date: "7 June 2025 - 10.00",
+          location: "Mega Mall Batam",
+          floor: "1st Floor",
+          slot: "4A",
+          duration: "3 Hours",
+          statusWidget: _buildStatusBox(
+            "Waiting for Payment",
             Colors.blue,
             Colors.white,
           ),
@@ -106,7 +130,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       padding: EdgeInsets.all(20),
       children: [
         _buildHistoryCard(
-          invoice: "INVOICE-1",
+          ticket: "TICKET-3",
           date: "1 April 2025 - 10.00",
           location: "Mega Mall Batam",
           floor: "1st Floor",
@@ -127,7 +151,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       padding: EdgeInsets.all(20),
       children: [
         _buildHistoryCard(
-          invoice: "INVOICE-1",
+          ticket: "TICKET-4",
           date: "7 June 2025 - 10.00",
           location: "Mega Mall Batam",
           floor: "1st Floor",
@@ -139,23 +163,32 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 
-  Widget _buildStatusBox(String text, Color bgColor, Color textColor) {
+  Widget _buildStatusBox(
+    String text,
+    Color bgColor,
+    Color textColor, {
+    bool isValid = false,
+  }) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          color: textColor,
+          fontWeight: FontWeight.bold,
+          fontSize: isValid ? 13 : 14,
+        ),
       ),
     );
   }
 
   Widget _buildHistoryCard({
-    required String invoice,
+    required String ticket,
     required String date,
     required String location,
     required String floor,
@@ -168,11 +201,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 6,
             offset: Offset(0, 2),
           ),
         ],
@@ -180,23 +213,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Top row: invoice & date
+          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(invoice, style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(date, style: TextStyle(fontSize: 12, color: Colors.black)),
+              Text(ticket, style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(date, style: TextStyle(fontSize: 12)),
             ],
           ),
           SizedBox(height: 10),
 
-          // Location
+          // Detail lokasi
           Text(location, style: TextStyle(fontWeight: FontWeight.bold)),
           Text(floor),
           Text(slot),
           Text(duration),
 
-          SizedBox(height: 10),
+          SizedBox(height: 12),
           Align(alignment: Alignment.centerRight, child: statusWidget),
         ],
       ),

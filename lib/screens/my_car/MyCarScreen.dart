@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'add_car.dart'; // Pastikan file ini ada di folder yang sama atau sesuaikan path-nya
 
 class MyCarScreen extends StatelessWidget {
   @override
@@ -23,7 +24,10 @@ class MyCarScreen extends StatelessWidget {
         backgroundColor: Colors.green,
         child: Icon(Icons.add, size: 30),
         onPressed: () {
-          // Tambahkan aksi untuk menambahkan mobil baru
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddCarScreen()),
+          );
         },
       ),
     );
@@ -79,7 +83,7 @@ class MyCarScreen extends StatelessWidget {
             ),
           ),
           Image.asset(
-            "assets/car.png", // Ganti dengan path gambar mobil
+            "assets/car.png", // Ganti dengan path gambar mobil sesuai kebutuhanmu
             width: 80,
             height: 80,
             fit: BoxFit.cover,
@@ -99,6 +103,7 @@ class MyCarScreen extends StatelessWidget {
           BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 2),
         ],
       ),
+      child: Center(child: Text("No additional cars yet")),
     );
   }
 }
