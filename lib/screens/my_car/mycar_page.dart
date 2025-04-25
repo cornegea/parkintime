@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkirtime/screens/my_car/manage_car.dart';
+import 'package:parkirtime/screens/my_car/view_detail_car.dart';
 import 'package:parkirtime/screens/my_car/add_car.dart';
 
 class ManageVehiclePage extends StatefulWidget {
@@ -9,93 +9,96 @@ class ManageVehiclePage extends StatefulWidget {
 
 class _ManageVehiclePageState extends State<ManageVehiclePage> {
   final scrollController = ScrollController();
-  List<Map<String, String>> vehicleList = [];
+
+  // Ini data dummy sementara
+  List<Map<String, String>> vehicleList = [
+    {
+      "plate": "BP1234YY",
+      "brand": "TOYOTA",
+      "type": "GR86/AT",
+      "category": "Sedan",
+      "color": "BIRU",
+      "year": "2024",
+      "plateColor": "Putih",
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5),
-      body: Stack(
+      backgroundColor: Color(0xFFF2F2F2),
+      body: Column(
         children: [
-          Column(
-            children: [
-              Container(
-                height: 180,
-                width: double.infinity,
-                color: Colors.green,
-                padding: EdgeInsets.only(top: 10, left: 16),
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
+          _buildHeader(),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: vehicleList.isEmpty
+                  ? _buildEmptyState()
+                  : ListView.builder(
+                      controller: scrollController,
+                      itemCount: vehicleList.length,
+                      itemBuilder: (context, index) {
+                        final vehicle = vehicleList[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: _buildVehicleCard(
+                            plate: vehicle["plate"]!,
+                            brand: vehicle["brand"]!,
+                            type: vehicle["type"]!,
+                            category: vehicle["category"] ?? "-",
+                            color: vehicle["color"]!,
+                            year: vehicle["year"]!,
+                            plateColor: vehicle["plateColor"] ?? "-",
+                          ),
+                        );
+                      },
                     ),
-                    SizedBox(width: 10),
-                    Text(
-                      "Choose a Car",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 100),
-            ],
-          ),
-          Positioned(
-            top: 120,
-            left: 16,
-            right: 16,
-            bottom: 100,
-            child: SingleChildScrollView(
-              controller: scrollController,
-              child: Column(
-                children: [
-                  if (vehicleList.isEmpty)
-                    _buildEmptyCard()
-                  else
-                    ...vehicleList.map((vehicle) => Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: _buildVehicleCard(
-                        plate: vehicle["plate"]!,
-                        brand: vehicle["brand"]!,
-                        type: vehicle["type"]!,
-                        color: vehicle["color"]!,
-                        year: vehicle["year"]!,
-                      ),
-                    )),
-                ],
-              ),
             ),
           ),
-          Positioned(
-            bottom: 100,
-            right: 24,
-            child: FloatingActionButton(
-              onPressed: () async {
-                final newVehicle = await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddCarScreen()),
-                );
+        ],
+      ),
+    );
+  }
 
-                if (newVehicle != null && newVehicle is Map<String, String>) {
-                  setState(() {
-                    vehicleList.add(newVehicle);
-                    scrollController.animateTo(
-                      0.0,
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.easeOut,
-                    );
-                  });
-                }
-              },
-              backgroundColor: Colors.green,
-              child: Icon(Icons.add, color: Colors.white),
+  Widget _buildHeader() {
+    return Container(
+      height: 120,
+      padding: EdgeInsets.only(top: 40, left: 16, right: 16),
+      decoration: BoxDecoration(color: Colors.green),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+          Text(
+            "My Car",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
+          ),
+          IconButton(
+            icon: Icon(Icons.add, color: Colors.white),
+            onPressed: () async {
+              final newVehicle = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddCarScreen()),
+              );
+              if (newVehicle != null && newVehicle is Map<String, String>) {
+                setState(() {
+                  vehicleList.add(newVehicle);
+                  scrollController.animateTo(
+                    0.0,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.easeOut,
+                  );
+                });
+              }
+            },
           ),
         ],
       ),
@@ -106,8 +109,10 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
     required String plate,
     required String brand,
     required String type,
+    required String category,
     required String color,
     required String year,
+    required String plateColor,
   }) {
     return Container(
       padding: EdgeInsets.all(16),
@@ -121,83 +126,116 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
         children: [
           Text(
             plate,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          Divider(),
+          Divider(height: 24, color: Colors.grey.shade300),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset("assets/car.png", height: 60),
-              SizedBox(width: 20),
+              Image.asset("assets/car.png", height: 80),
+              SizedBox(width: 16),
               Expanded(
                 child: Column(
                   children: [
-                    _buildDetail("Brand", brand),
-                    _buildDetail("Type", type),
-                    _buildDetail("Colour", color),
-                    _buildDetail("Year", year),
+                    _buildDetailRow("Brand", brand),
+                    _buildDetailRow("Type", type),
+                    _buildDetailRow("Category", category),
+                    _buildDetailRow("Color", color),
+                    _buildDetailRow("Manufacture Year", year),
+                    _buildDetailRow("License Plate Color", plateColor),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ManageCarPage(
-                    plate: plate,
-                    brand: brand,
-                    type: type,
-                    color: color,
-                    year: year,
+          SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewDetailCarPage(
+                      carData: {
+                        "plate": plate,
+                        "brand": brand,
+                        "type": type,
+                        "color": color,
+                        "year": year,
+                        "owner": "Ayang", // Dummy owner
+                        "category": category,
+                        "capacity": "2000",
+                        "energy": "Bensin",
+                        "plateColor": plateColor,
+                      },
+                    ),
                   ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
                 ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                "View Detail",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-            child: Text("Manage", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDetail(String label, String value) {
+  Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
-          Text(label, style: TextStyle(color: Colors.grey[600])),
-          Spacer(),
-          Text(
-            value.toUpperCase(),
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(color: Colors.black54),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value.toUpperCase(),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildEmptyCard() {
-    return Container(
-      padding: EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
-      ),
-      child: Center(
-        child: Text(
-          "No vehicles added yet",
-          style: TextStyle(color: Colors.grey, fontSize: 16),
-        ),
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            "assets/images/empty_car.png", // Pastikan file ini ada
+            width: 150,
+            height: 150,
+          ),
+          SizedBox(height: 16),
+          Text(
+            "No cars added yet",
+            style: TextStyle(
+              color: Colors.black54,
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }

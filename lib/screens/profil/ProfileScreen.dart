@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkirtime/screens/profil/edit_profile_screen.dart';
 import 'package:parkirtime/screens/profil/change_password_screen.dart';
+import 'package:parkirtime/screens/my_car/mycar_page.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -70,7 +71,14 @@ class ProfileScreen extends StatelessWidget {
                   }),
 
                   Divider(height: 1),
-                  _buildMenuItem(Icons.directions_car_filled, "My Car", () {}),
+                  _buildMenuItem(Icons.directions_car_filled, "My Car", () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ManageVehiclePage(),
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),
