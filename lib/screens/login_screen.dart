@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'register_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'halaman_home/home_screen.dart';
-
-void main() {
-  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: LoginScreen()));
-}
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -16,12 +14,52 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   bool _obscureText = true;
 
+  Future<void> login() async {
+    final String email = emailController.text;
+    final String password = passwordController.text;
+
+    try {
+      final response = await http.post(
+        Uri.parse(
+          'http://192.168.1.4/flutter_api/login.php',
+        ), // Ganti IP sesuai IP laptopmu
+        body: {'email': email, 'password': password},
+      );
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['success']) {
+          // Login sukses
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        } else {
+          // Login gagal
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Email atau Password salah!')));
+        }
+      } else {
+        // Server error
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Server error')));
+      }
+    } catch (e) {
+      // Koneksi error
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Tidak bisa terhubung ke server')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Image
+          // Background
           Container(
             height: MediaQuery.of(context).size.height * 0.5,
             decoration: BoxDecoration(
@@ -35,14 +73,10 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-
-          // Scrollable Content
           SingleChildScrollView(
             child: Column(
               children: [
                 SizedBox(height: 100),
-
-                // Logo
                 Center(
                   child: Image.asset(
                     'assets/Logo.png',
@@ -51,8 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 90),
-
-                // Login Form
                 Container(
                   width: double.infinity,
                   height: MediaQuery.of(context).size.height * 0.6,
@@ -81,8 +113,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(height: 20),
-
-                      // Input Email
                       TextField(
                         controller: emailController,
                         decoration: InputDecoration(
@@ -97,8 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         keyboardType: TextInputType.emailAddress,
                       ),
                       SizedBox(height: 15),
-
-                      // Password
                       TextField(
                         controller: passwordController,
                         obscureText: _obscureText,
@@ -124,8 +152,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(height: 25),
-
-                      // Sign In Button
                       SizedBox(
                         width: double.infinity,
                         height: 50,
@@ -134,15 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             backgroundColor: Colors.green,
                             shape: StadiumBorder(),
                           ),
-                          onPressed: () {
-                            // Pindah ke HomeScreen
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                            );
-                          },
+                          onPressed: login, // ← Ganti ke login()
                           child: Text(
                             "Sign In",
                             style: TextStyle(fontSize: 18, color: Colors.white),
@@ -150,8 +168,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(height: 15),
-
-                      // Forgot Password & Create Account
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

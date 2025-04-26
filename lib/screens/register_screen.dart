@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'login_screen.dart'; // Pastikan file ini ada
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -10,7 +11,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final nameController = TextEditingController();
-  final emailController = TextEditingController(); // Ganti dari phone
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
@@ -18,48 +19,70 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscureConfirm = true;
 
   Future<void> registerUser() async {
+    print('📩 Register function called');
+    print('Name: ${nameController.text}');
+    print('Email: ${emailController.text}');
+    print('Password: ${passwordController.text}');
+    print('Confirm Password: ${confirmPasswordController.text}');
+
     if (nameController.text.isEmpty ||
         emailController.text.isEmpty ||
         passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
+      print('❌ Some fields are empty');
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Please fill in all the fields')));
+      ).showSnackBar(SnackBar(content: Text('Please fill in all fields')));
       return;
     }
 
     if (passwordController.text != confirmPasswordController.text) {
+      print('❌ Passwords do not match');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Passwords do not match')));
       return;
     }
 
-    final url = Uri.parse("http://10.170.10.49/flutter_api/register.php");
-
     try {
+      final url = Uri.parse(
+        "http://192.168.1.4/flutter_api/register.php",
+      ); // Ganti IP ini sesuai Laragon kamu
+
       final response = await http.post(
         url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "name": nameController.text,
-          "email": emailController.text,
-          "password": passwordController.text,
-        }),
+        body: {
+          "name": nameController.text.trim(),
+          "email": emailController.text.trim(),
+          "password": passwordController.text.trim(),
+        },
       );
 
-      final data = jsonDecode(response.body);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(data['message'])));
+      print('📡 Response status: ${response.statusCode}');
+      print('📨 Response body: ${response.body}');
 
-      if (data['success']) {
-        Navigator.pop(context);
+      final data = jsonDecode(response.body);
+
+      if (data['success'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? 'Registration successful')),
+        );
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+          (route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? 'Registration failed')),
+        );
       }
     } catch (e) {
+      print('❗ Exception during register: $e');
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Gagal register: $e')));
+      ).showSnackBar(SnackBar(content: Text('An error occurred: $e')));
     }
   }
 
