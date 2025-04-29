@@ -17,19 +17,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
+  bool _isLoading = false; // 👈 untuk loading state
 
   Future<void> registerUser() async {
     print('📩 Register function called');
-    print('Name: ${nameController.text}');
-    print('Email: ${emailController.text}');
-    print('Password: ${passwordController.text}');
-    print('Confirm Password: ${confirmPasswordController.text}');
 
     if (nameController.text.isEmpty ||
         emailController.text.isEmpty ||
         passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
-      print('❌ Some fields are empty');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Please fill in all fields')));
@@ -37,18 +33,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     if (passwordController.text != confirmPasswordController.text) {
-      print('❌ Passwords do not match');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Passwords do not match')));
       return;
     }
 
-    try {
-      final url = Uri.parse(
-        "http://192.168.1.4/flutter_api/register.php",
-      ); // Ganti IP ini sesuai Laragon kamu
+    setState(() {
+      _isLoading = true; // tampilkan loading
+    });
 
+    try {
+      final url = Uri.parse("http://192.168.1.15/flutter_api/register.php");
       final response = await http.post(
         url,
         body: {
@@ -58,19 +54,61 @@ class _RegisterScreenState extends State<RegisterScreen> {
         },
       );
 
-      print('📡 Response status: ${response.statusCode}');
-      print('📨 Response body: ${response.body}');
-
       final data = jsonDecode(response.body);
 
       if (data['success'] == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['message'] ?? 'Registration successful')),
+        // Tampilkan dialog sukses
+        showDialog(
+          context: context,
+          barrierDismissible: false, // tidak bisa dismiss manual
+          builder:
+              (context) => AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.green,
+                      size: 80,
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      "Registration Successful!",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
         );
 
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+        // Tunggu 1.5 detik lalu lanjut
+        await Future.delayed(Duration(milliseconds: 1000));
+
+        Navigator.of(context).pushAndRemoveUntil(
+          PageRouteBuilder(
+            transitionDuration: Duration(milliseconds: 600),
+            pageBuilder:
+                (context, animation, secondaryAnimation) => LoginScreen(),
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) {
+              final offsetAnimation = Tween<Offset>(
+                begin: Offset(1.0, 0.0),
+                end: Offset.zero,
+              ).animate(animation);
+              return SlideTransition(position: offsetAnimation, child: child);
+            },
+          ),
           (route) => false,
         );
       } else {
@@ -83,6 +121,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('An error occurred: $e')));
+    } finally {
+      setState(() {
+        _isLoading = false; // sembunyikan loading
+      });
     }
   }
 
@@ -179,25 +221,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: registerUser,
+                  onPressed:
+                      _isLoading ? null : registerUser, // disable saat loading
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF2ECC40),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: Text(
-                    "Sign Up",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
+                  child:
+                      _isLoading
+                          ? CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          )
+                          : Text(
+                            "Sign Up",
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
                 ),
               ),
               const SizedBox(height: 20),
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: _isLoading ? null : () => Navigator.pop(context),
                 child: Text(
                   "Already have an account? Sign In",
                   style: GoogleFonts.poppins(color: Color(0xFF2ECC40)),

@@ -15,39 +15,63 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
 
   Future<void> login() async {
-    final String email = emailController.text;
-    final String password = passwordController.text;
+    final String email = emailController.text.trim();
+    final String password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Please fill in all fields')));
+      return;
+    }
 
     try {
       final response = await http.post(
-        Uri.parse(
-          'http://192.168.1.4/flutter_api/login.php',
-        ), // Ganti IP sesuai IP laptopmu
+        Uri.parse('http://192.168.1.15/flutter_api/login.php'),
         body: {'email': email, 'password': password},
       );
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['success']) {
-          // Login sukses
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
+          // Login sukses, pakai animasi transisi
+          Navigator.of(context).pushReplacement(
+            PageRouteBuilder(
+              transitionDuration: Duration(milliseconds: 600),
+              pageBuilder:
+                  (context, animation, secondaryAnimation) => HomeScreen(),
+              transitionsBuilder: (
+                context,
+                animation,
+                secondaryAnimation,
+                child,
+              ) {
+                final tween = Tween<Offset>(
+                  begin: Offset(1.0, 0.0),
+                  end: Offset.zero,
+                );
+                final curvedAnimation = CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.ease,
+                );
+                return SlideTransition(
+                  position: tween.animate(curvedAnimation),
+                  child: child,
+                );
+              },
+            ),
           );
         } else {
-          // Login gagal
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('Email atau Password salah!')));
         }
       } else {
-        // Server error
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Server error')));
       }
     } catch (e) {
-      // Koneksi error
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Tidak bisa terhubung ke server')));
@@ -137,6 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           filled: true,
                           fillColor: Colors.white,
+                          prefixIcon: Icon(Icons.lock),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscureText
@@ -160,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             backgroundColor: Colors.green,
                             shape: StadiumBorder(),
                           ),
-                          onPressed: login, // ← Ganti ke login()
+                          onPressed: login,
                           child: Text(
                             "Sign In",
                             style: TextStyle(fontSize: 18, color: Colors.white),
@@ -172,7 +197,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              // Aksi untuk forgot password, nanti bisa dikembangkan
+                            },
                             child: Text(
                               "Forgot Password?",
                               style: TextStyle(
@@ -183,10 +210,36 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RegisterScreen(),
+                              Navigator.of(context).push(
+                                PageRouteBuilder(
+                                  transitionDuration: Duration(
+                                    milliseconds: 600,
+                                  ),
+                                  pageBuilder:
+                                      (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                      ) => RegisterScreen(),
+                                  transitionsBuilder: (
+                                    context,
+                                    animation,
+                                    secondaryAnimation,
+                                    child,
+                                  ) {
+                                    final tween = Tween<Offset>(
+                                      begin: Offset(1.0, 0.0),
+                                      end: Offset.zero,
+                                    );
+                                    final curvedAnimation = CurvedAnimation(
+                                      parent: animation,
+                                      curve: Curves.ease,
+                                    );
+                                    return SlideTransition(
+                                      position: tween.animate(curvedAnimation),
+                                      child: child,
+                                    );
+                                  },
                                 ),
                               );
                             },
