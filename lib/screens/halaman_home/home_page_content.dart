@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'widgets_home/Feature_item.dart';
 import 'widgets_home/vehicle_card.dart';
-import 'widgets_home/wallet_card.dart';
 import 'package:parkirtime/screens/my_car/mycar_page.dart';
-import 'package:parkirtime/screens/reservation/checklotpage.dart';
+import 'package:parkirtime/screens/checklot/checklotpage.dart';
+import 'package:parkirtime/screens/reservation/ReservasionPage.dart';
 import 'package:parkirtime/screens/ticket_page.dart';
 
 class HomePageContent extends StatelessWidget {
@@ -15,10 +15,16 @@ class HomePageContent extends StatelessWidget {
           Column(
             children: [
               _buildHeader(),
+              const SizedBox(height: 80), // spasi untuk tempat menu fitur
               Expanded(child: _buildScrollableContent(context)),
             ],
           ),
-          const WalletCard(), // Tetap on top
+          Positioned(
+            top: 140,
+            left: 20,
+            right: 20,
+            child: _buildFeatureMenu(context),
+          ),
         ],
       ),
     );
@@ -28,7 +34,7 @@ class HomePageContent extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: Color(0xFF2ECC40),
-      padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 30),
+      padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 80),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -42,7 +48,7 @@ class HomePageContent extends StatelessWidget {
           ),
           const SizedBox(height: 40),
           const Text(
-            "Hi, Corne",
+            "Hi, Ayang",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -54,53 +60,64 @@ class HomePageContent extends StatelessWidget {
     );
   }
 
+  Widget _buildFeatureMenu(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          FeatureItem(
+            imagePath: 'assets/chek.png',
+            title: "Check Lot",
+            onTap:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => CheckLotPage()),
+                ),
+          ),
+          FeatureItem(
+            imagePath: 'assets/reservation.png',
+            title: "Reservation",
+            onTap:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => Reservasionpage()),
+                ),
+          ),
+          FeatureItem(
+            imagePath: 'assets/tik.png',
+            title: "Ticket",
+            onTap:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => TicketPage()),
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildScrollableContent(BuildContext context) {
     return Container(
       color: const Color.fromARGB(255, 235, 229, 229),
-      padding: const EdgeInsets.only(top: 100),
+      padding: const EdgeInsets.only(top: 20),
       child: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Feature Menu
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  FeatureItem(
-                    imagePath: 'assets/chek.png',
-                    title: "Check Lot",
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => CheckLotPage()),
-                        ),
-                  ),
-                  FeatureItem(
-                    imagePath: 'assets/reservation.png',
-                    title: "Reservation",
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => CheckLotPage()),
-                        ),
-                  ),
-                  FeatureItem(
-                    imagePath: 'assets/tik.png',
-                    title: "Ticket",
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => TicketPage()),
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 25),
-
             // My Car Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -131,13 +148,13 @@ class HomePageContent extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             const VehicleCard(),
-            const SizedBox(height: 25),
+            const SizedBox(height: 45),
 
             // Parking Spot
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 29),
               child: const Text(
                 "Parking Spot",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -181,7 +198,6 @@ class HomePageContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Replace with actual map/image asset
           Container(
             height: 90,
             decoration: BoxDecoration(

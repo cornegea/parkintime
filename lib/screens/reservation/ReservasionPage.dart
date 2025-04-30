@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkirtime/screens/reservation/select_vehicle.dart';
 
-class CheckLotPage extends StatelessWidget {
+class Reservasionpage extends StatelessWidget {
   final List<Map<String, dynamic>> parkingSpots = [
     {
       "name": "Grand Batam Mall",

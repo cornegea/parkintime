@@ -16,25 +16,28 @@ class FeatureItem extends StatelessWidget {
           Container(
             width: 60,
             height: 60,
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: Colors.grey[300]!),
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.05),
-                  blurRadius: 5,
+                  color: Colors.black12,
+                  blurRadius: 6,
                   offset: Offset(0, 3),
                 ),
               ],
             ),
-            child: Image.asset(imagePath),
+            child: Image.asset(imagePath, fit: BoxFit.contain),
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 8),
           Text(
             title,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
           ),
         ],
       ),

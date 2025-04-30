@@ -44,7 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      final url = Uri.parse("http://192.168.1.15/flutter_api/register.php");
+      final url = Uri.parse("http://192.168.1.4/flutter_api/register.php");
       final response = await http.post(
         url,
         body: {
