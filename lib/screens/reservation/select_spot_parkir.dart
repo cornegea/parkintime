@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:parkirtime/screens/reservation/review_booking_page.dart';
 
 class ParkingLotDetailPage extends StatefulWidget {
@@ -31,6 +32,7 @@ class _ParkingLotDetailPageState extends State<ParkingLotDetailPage> {
         title: const Text('Select Parking Spot'),
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Column(
         children: [
@@ -41,34 +43,45 @@ class _ParkingLotDetailPageState extends State<ParkingLotDetailPage> {
                 [1, 2, 3].map((floor) {
                   final isSelected = selectedFloor == floor;
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor:
-                            isSelected ? Colors.green : Colors.white,
-                        side: const BorderSide(color: Colors.green),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 8,
-                        ),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          selectedFloor = floor;
-                          selectedSlot = null;
-                        });
-                      },
-                      child: Text(
-                        '${floor}st Floor',
-                        style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.green,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    child:
+                        isSelected
+                            ? ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 10,
+                                ),
+                              ),
+                              child: Text('${floor}st Floor'),
+                            )
+                            : OutlinedButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedFloor = floor;
+                                  selectedSlot = null;
+                                });
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(color: Colors.green),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 10,
+                                ),
+                              ),
+                              child: Text(
+                                '${floor}st Floor',
+                                style: const TextStyle(color: Colors.green),
+                              ),
+                            ),
                   );
                 }).toList(),
           ),
@@ -76,95 +89,33 @@ class _ParkingLotDetailPageState extends State<ParkingLotDetailPage> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  // Garis jalan kiri
-                  Column(
-                    children: [
-                      const Icon(Icons.arrow_downward, color: Colors.black38),
-                      Expanded(
-                        child: Container(
-                          width: 2,
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              left: BorderSide(
-                                color: Colors.black26,
-                                width: 2,
-                                style: BorderStyle.solid,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 8),
-                  // Slot parkir
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: (slots.length / 2).ceil(),
-                      itemBuilder: (context, index) {
-                        final leftIndex = index * 2;
-                        final rightIndex = leftIndex + 1;
+              child: ListView.builder(
+                itemCount: (slots.length / 2).ceil(),
+                itemBuilder: (context, index) {
+                  final leftIndex = index * 2;
+                  final rightIndex = leftIndex + 1;
 
-                        return Column(
-                          children: [
-                            Row(
-                              children: [
-                                buildSlot(
-                                  slots.length > leftIndex
-                                      ? slots[leftIndex]
-                                      : null,
-                                ),
-                                buildSlot(
-                                  slots.length > rightIndex
-                                      ? slots[rightIndex]
-                                      : null,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          buildSlot(
+                            slots.length > leftIndex ? slots[leftIndex] : null,
+                          ),
+                          buildSlot(
+                            slots.length > rightIndex
+                                ? slots[rightIndex]
+                                : null,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  );
+                },
               ),
             ),
           ),
-          // Garis jalan tengah
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                const SizedBox(width: 32),
-                Expanded(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Row(
-                        children: List.generate(
-                          20,
-                          (index) => Expanded(
-                            child: Container(
-                              height: 2,
-                              color:
-                                  index.isEven
-                                      ? Colors.black26
-                                      : Colors.transparent,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Icon(Icons.arrow_forward, color: Colors.black38),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Tombol Continue
           Padding(
             padding: const EdgeInsets.all(20),
             child: ElevatedButton(
@@ -227,40 +178,37 @@ class _ParkingLotDetailPageState extends State<ParkingLotDetailPage> {
               child: Container(
                 margin: const EdgeInsets.all(6),
                 height: 80,
-                decoration: BoxDecoration(
-                  color: isSelected ? Colors.yellow : Colors.transparent,
-                  border:
-                      isOccupied
-                          ? null
-                          : Border.all(
-                            color: Colors.green,
-                            width: 2,
-                            style:
-                                BorderStyle
-                                    .solid, // nanti aku kasih putus-putus di bawah
-                          ),
-                  borderRadius: BorderRadius.circular(12),
-                  image:
-                      isOccupied
-                          ? const DecorationImage(
-                            image: AssetImage('assets/car.png'),
-                            fit: BoxFit.contain,
-                          )
-                          : null,
-                ),
                 child:
-                    !isOccupied
-                        ? Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            slot ?? '',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                    isOccupied
+                        ? ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.asset(
+                            'assets/car.png',
+                            fit: BoxFit.contain,
                           ),
                         )
-                        : null,
+                        : Container(
+                          decoration: BoxDecoration(
+                            color: isSelected ? Colors.yellow : Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: DottedBorder(
+                            borderType: BorderType.RRect,
+                            radius: const Radius.circular(10),
+                            color: Colors.green,
+                            strokeWidth: 2,
+                            dashPattern: [5, 4],
+                            child: Center(
+                              child: Text(
+                                slot ?? '',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
               ),
             );
           },

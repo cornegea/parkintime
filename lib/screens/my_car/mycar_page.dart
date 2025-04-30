@@ -10,7 +10,6 @@ class ManageVehiclePage extends StatefulWidget {
 class _ManageVehiclePageState extends State<ManageVehiclePage> {
   final scrollController = ScrollController();
 
-  // Ini data dummy sementara
   List<Map<String, String>> vehicleList = [
     {
       "plate": "BP1234YY",
@@ -33,27 +32,28 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: vehicleList.isEmpty
-                  ? _buildEmptyState()
-                  : ListView.builder(
-                      controller: scrollController,
-                      itemCount: vehicleList.length,
-                      itemBuilder: (context, index) {
-                        final vehicle = vehicleList[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: _buildVehicleCard(
-                            plate: vehicle["plate"]!,
-                            brand: vehicle["brand"]!,
-                            type: vehicle["type"]!,
-                            category: vehicle["category"] ?? "-",
-                            color: vehicle["color"]!,
-                            year: vehicle["year"]!,
-                            plateColor: vehicle["plateColor"] ?? "-",
-                          ),
-                        );
-                      },
-                    ),
+              child:
+                  vehicleList.isEmpty
+                      ? _buildEmptyState()
+                      : ListView.builder(
+                        controller: scrollController,
+                        itemCount: vehicleList.length,
+                        itemBuilder: (context, index) {
+                          final vehicle = vehicleList[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: _buildVehicleCard(
+                              plate: vehicle["plate"]!,
+                              brand: vehicle["brand"]!,
+                              type: vehicle["type"]!,
+                              category: vehicle["category"] ?? "-",
+                              color: vehicle["color"]!,
+                              year: vehicle["year"]!,
+                              plateColor: vehicle["plateColor"] ?? "-",
+                            ),
+                          );
+                        },
+                      ),
             ),
           ),
         ],
@@ -65,7 +65,7 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
     return Container(
       height: 120,
       padding: EdgeInsets.only(top: 40, left: 16, right: 16),
-      decoration: BoxDecoration(color: Colors.green),
+      decoration: BoxDecoration(color: Color(0xFF2ECC40)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -77,7 +77,7 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
             "My Car",
             style: TextStyle(
               fontSize: 20,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
@@ -114,41 +114,48 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
     required String year,
     required String plateColor,
   }) {
+    final isPlateColorWhite = plateColor.toLowerCase() == 'putih';
+
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 6)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             plate,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
           ),
-          Divider(height: 24, color: Colors.grey.shade300),
+          Divider(height: 32, color: Colors.grey.shade300),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset("assets/car.png", height: 80),
+              Image.asset("assets/car.png", height: 60),
               SizedBox(width: 16),
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildDetailRow("Brand", brand),
                     _buildDetailRow("Type", type),
                     _buildDetailRow("Category", category),
                     _buildDetailRow("Color", color),
                     _buildDetailRow("Manufacture Year", year),
-                    _buildDetailRow("License Plate Color", plateColor),
+                    _buildDetailRow(
+                      "License Plate Color",
+                      plateColor,
+                      overrideColor: isPlateColorWhite ? Colors.black87 : null,
+                    ),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -156,35 +163,37 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ViewDetailCarPage(
-                      carData: {
-                        "plate": plate,
-                        "brand": brand,
-                        "type": type,
-                        "color": color,
-                        "year": year,
-                        "owner": "Ayang", // Dummy owner
-                        "category": category,
-                        "capacity": "2000",
-                        "energy": "Bensin",
-                        "plateColor": plateColor,
-                      },
-                    ),
+                    builder:
+                        (context) => ViewDetailCarPage(
+                          carData: {
+                            "plate": plate,
+                            "brand": brand,
+                            "type": type,
+                            "color": color,
+                            "year": year,
+                            "owner": "Ayang",
+                            "category": category,
+                            "capacity": "2000",
+                            "energy": "Bensin",
+                            "plateColor": plateColor,
+                          },
+                        ),
                   ),
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: Color(0xFF2ECC40),
                 padding: EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               child: Text(
                 "View Detail",
                 style: TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
               ),
             ),
@@ -194,21 +203,27 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(String label, String value, {Color? overrideColor}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: 6),
       child: Row(
         children: [
           Expanded(
+            flex: 2,
             child: Text(
               label,
-              style: TextStyle(color: Colors.black54),
+              style: TextStyle(color: Colors.black54, fontSize: 13),
             ),
           ),
           Expanded(
+            flex: 3,
             child: Text(
               value.toUpperCase(),
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+                color: overrideColor,
+              ),
             ),
           ),
         ],
@@ -221,11 +236,7 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            "assets/images/empty_car.png", // Pastikan file ini ada
-            width: 150,
-            height: 150,
-          ),
+          Image.asset("assets/images/empty_car.png", width: 150, height: 150),
           SizedBox(height: 16),
           Text(
             "No cars added yet",

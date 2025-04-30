@@ -7,6 +7,8 @@ import 'package:parkirtime/screens/reservation/ReservasionPage.dart';
 import 'package:parkirtime/screens/ticket_page.dart';
 
 class HomePageContent extends StatelessWidget {
+  final List<Map<String, dynamic>> vehicles = []; // Dummy list kendaraan
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -15,12 +17,11 @@ class HomePageContent extends StatelessWidget {
           Column(
             children: [
               _buildHeader(),
-              const SizedBox(height: 80), // spasi untuk tempat menu fitur
               Expanded(child: _buildScrollableContent(context)),
             ],
           ),
           Positioned(
-            top: 140,
+            top: 160,
             left: 20,
             right: 20,
             child: _buildFeatureMenu(context),
@@ -41,7 +42,7 @@ class HomePageContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 251, 246, 246),
+              color: const Color.fromARGB(255, 246, 250, 251),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Image.asset('assets/log.png', height: 30),
@@ -64,7 +65,7 @@ class HomePageContent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color.fromARGB(255, 202, 225, 238),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -112,7 +113,7 @@ class HomePageContent extends StatelessWidget {
   Widget _buildScrollableContent(BuildContext context) {
     return Container(
       color: const Color.fromARGB(255, 235, 229, 229),
-      padding: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.only(top: 100),
       child: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 30),
         child: Column(
@@ -149,7 +150,46 @@ class HomePageContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            const VehicleCard(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child:
+                  vehicles.isEmpty
+                      ? Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 6,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: const [
+                            Icon(
+                              Icons.directions_car,
+                              size: 50,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                "No cars added yet",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                      : VehicleCard(),
+            ),
             const SizedBox(height: 45),
 
             // Parking Spot

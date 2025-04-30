@@ -7,52 +7,67 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF3F3F3),
+      backgroundColor: const Color(0xFFF3F3F3),
       body: Column(
         children: [
-          // Header hijau
+          // Header Hijau
           Container(
             width: double.infinity,
-            color: Color(0xFF2ECC40),
-            padding: const EdgeInsets.only(top: 60, bottom: 20),
-            child: Column(
+            color: const Color(0xFF2ECC40),
+            padding: const EdgeInsets.only(
+              top: 40,
+              bottom: 20,
+              left: 16,
+              right: 16,
+            ),
+            child: Row(
               children: [
-                CircleAvatar(radius: 40, backgroundColor: Colors.grey.shade300),
-                const SizedBox(height: 10),
-                Text(
-                  "Ayang",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
+                const CircleAvatar(
+                  radius: 35,
+                  backgroundColor: Colors.grey,
+                  child: Icon(Icons.person, size: 35, color: Colors.white),
                 ),
-                Text(
-                  "6281234567890",
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Ayang",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      "ayang@email.com",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-
-          // Card menu
+          SizedBox(height: 20),
+          // Menu Card
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black12,
-                    blurRadius: 6,
-                    offset: Offset(0, 3),
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
                   ),
                 ],
               ),
               child: Column(
                 children: [
-                  _buildMenuItem(Icons.edit, "Edit Profile", () {
+                  _buildMenuItem(Icons.person_outline, "Edit Profile", () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -60,7 +75,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     );
                   }),
-                  Divider(height: 1),
+                  const Divider(height: 1),
                   _buildMenuItem(Icons.lock_outline, "Change Password", () {
                     Navigator.push(
                       context,
@@ -69,9 +84,8 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     );
                   }),
-
-                  Divider(height: 1),
-                  _buildMenuItem(Icons.directions_car_filled, "My Car", () {
+                  const Divider(height: 1),
+                  _buildMenuItem(Icons.directions_car, "My Car", () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -84,7 +98,32 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
 
-          Spacer(),
+          SizedBox(height: 20),
+          // Logout Button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: SizedBox(
+              width: 350,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(
+                    0xFFFF3B30,
+                  ), // Warna merah terang
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  "Log Out",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -94,7 +133,7 @@ class ProfileScreen extends StatelessWidget {
     return ListTile(
       leading: Icon(icon, color: Colors.black),
       title: Text(text),
-      trailing: Icon(Icons.chevron_right),
+      trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
     );
   }

@@ -16,26 +16,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
       backgroundColor: Color(0xFFF5F5F5),
       body: Column(
         children: [
-          // ✅ AppBar Hijau (HANYA AppBar)
+          // AppBar Hijau (hanya header)
           Container(
-            height: 100,
+            height: 70,
             width: double.infinity,
             color: Colors.green,
             alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text(
-                "History",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
           ),
 
-          // ✅ Tab Menu di BAWAH AppBar
+          // Tab Filter
           Container(
             color: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -102,10 +91,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
           slot: "4A",
           duration: "3 Hours",
           statusWidget: _buildStatusBox(
-            "Valid until\n7 June 2025\n13.00",
-            Colors.blue,
-            Colors.white,
-            isValid: true,
+            title: "Valid until",
+            date: "7 June 2025",
+            time: "13.00",
+            color: Colors.blue,
           ),
         ),
         _buildHistoryCard(
@@ -115,7 +104,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           floor: "1st Floor",
           slot: "4A",
           duration: "3 Hours",
-          statusWidget: _buildStatusBox(
+          statusWidget: _buildTextStatusBox(
             "Waiting for Payment",
             Colors.blue,
             Colors.white,
@@ -136,7 +125,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           floor: "1st Floor",
           slot: "4A",
           duration: "3 Hours",
-          statusWidget: _buildStatusBox(
+          statusWidget: _buildTextStatusBox(
             "Completed",
             Colors.green,
             Colors.white,
@@ -157,18 +146,48 @@ class _HistoryScreenState extends State<HistoryScreen> {
           floor: "1st Floor",
           slot: "4A",
           duration: "3 Hours",
-          statusWidget: _buildStatusBox("Canceled", Colors.red, Colors.white),
+          statusWidget: _buildTextStatusBox(
+            "Canceled",
+            Colors.red,
+            Colors.white,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildStatusBox(
-    String text,
-    Color bgColor,
-    Color textColor, {
-    bool isValid = false,
+  Widget _buildStatusBox({
+    required String title,
+    required String date,
+    required String time,
+    required Color color,
   }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Text(title, style: TextStyle(color: Colors.white, fontSize: 12)),
+          SizedBox(height: 2),
+          Text(date, style: TextStyle(color: Colors.white, fontSize: 12)),
+          SizedBox(height: 4),
+          Text(
+            time,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextStatusBox(String text, Color bgColor, Color textColor) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
@@ -178,11 +197,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          color: textColor,
-          fontWeight: FontWeight.bold,
-          fontSize: isValid ? 13 : 14,
-        ),
+        style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -197,23 +212,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
     required Widget statusWidget,
   }) {
     return Container(
-      margin: EdgeInsets.only(bottom: 20),
+      margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withOpacity(0.06),
             blurRadius: 6,
             offset: Offset(0, 2),
           ),
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -222,15 +235,29 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ],
           ),
           SizedBox(height: 10),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Info lokasi
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      location,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(floor),
+                    Text(slot),
+                    Text(duration),
+                  ],
+                ),
+              ),
 
-          // Detail lokasi
-          Text(location, style: TextStyle(fontWeight: FontWeight.bold)),
-          Text(floor),
-          Text(slot),
-          Text(duration),
-
-          SizedBox(height: 12),
-          Align(alignment: Alignment.centerRight, child: statusWidget),
+              // Status di kanan
+              statusWidget,
+            ],
+          ),
         ],
       ),
     );

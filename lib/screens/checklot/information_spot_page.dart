@@ -8,6 +8,70 @@ class InformationSpotPage extends StatefulWidget {
 class _InformationSpotPageState extends State<InformationSpotPage> {
   int selectedFloor = 1;
 
+  final Map<int, List<Map<String, dynamic>>> floorData = {
+    1: [
+      {
+        'labels': ['', 'A-06'],
+        'hasCar': [true, false],
+      },
+      {
+        'labels': ['A-02', ''],
+        'hasCar': [false, true],
+      },
+      {
+        'labels': ['', 'A-04'],
+        'hasCar': [true, false],
+      },
+      {'divider': true},
+      {
+        'labels': ['B-01', ''],
+        'hasCar': [false, true],
+      },
+      {
+        'labels': ['', 'B-05'],
+        'hasCar': [true, false],
+      },
+      {
+        'labels': ['B-03', 'B-04'],
+        'hasCar': [false, false],
+      },
+    ],
+    2: [
+      {
+        'labels': ['C-01', 'C-02'],
+        'hasCar': [false, false],
+      },
+      {
+        'labels': ['C-03', ''],
+        'hasCar': [true, false],
+      },
+      {
+        'labels': ['', 'C-05'],
+        'hasCar': [true, false],
+      },
+      {'divider': true},
+      {
+        'labels': ['D-01', 'D-02'],
+        'hasCar': [false, false],
+      },
+    ],
+    3: [
+      {
+        'labels': ['E-01', 'E-02'],
+        'hasCar': [false, false],
+      },
+      {
+        'labels': ['E-03', 'E-04'],
+        'hasCar': [false, true],
+      },
+      {'divider': true},
+      {
+        'labels': ['F-01', ''],
+        'hasCar': [true, false],
+      },
+    ],
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,19 +109,22 @@ class _InformationSpotPageState extends State<InformationSpotPage> {
             ),
           ),
 
+          // Dynamic slot list
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(16),
               child: Column(
-                children: [
-                  _buildParkingRow(['', 'A-06'], [true, false]),
-                  _buildParkingRow(['A-02', ''], [false, true]),
-                  _buildParkingRow(['', 'A-04'], [true, false]),
-                  Divider(thickness: 1),
-                  _buildParkingRow(['B-01', ''], [false, true]),
-                  _buildParkingRow(['', 'B-05'], [true, false]),
-                  _buildParkingRow(['B-03', 'B-04'], [false, false]),
-                ],
+                children:
+                    floorData[selectedFloor]!.map<Widget>((row) {
+                      if (row.containsKey('divider')) {
+                        return Divider(thickness: 1);
+                      } else {
+                        return _buildParkingRow(
+                          List<String>.from(row['labels']),
+                          List<bool>.from(row['hasCar']),
+                        );
+                      }
+                    }).toList(),
               ),
             ),
           ),
@@ -97,9 +164,7 @@ class _InformationSpotPageState extends State<InformationSpotPage> {
               margin: EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
                 color:
-                    labels[index] == 'A-06'
-                        ? Colors.green.shade50
-                        : Colors.transparent,
+                    hasCar[index] ? Colors.green.shade50 : Colors.transparent,
                 border: Border.all(
                   color: Colors.black26,
                   style: BorderStyle.solid,

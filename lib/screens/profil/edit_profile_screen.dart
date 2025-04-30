@@ -13,10 +13,13 @@ class EditProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 31, 172, 85),
         elevation: 0,
-        leading: const BackButton(color: Colors.black),
-        title: const Text("Edit Profile", style: TextStyle(color: Colors.black)),
+        leading: const BackButton(color: Colors.white),
+        title: const Text(
+          "Edit Profile",
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
