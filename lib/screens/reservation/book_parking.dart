@@ -31,9 +31,22 @@ class _BookParkingDetailsPageState extends State<BookParkingDetailsPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const Text('Book Parking Details'),
+        toolbarHeight: 90,
         backgroundColor: Colors.green,
-        leading: const BackButton(color: Colors.white),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Book Parking Details",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Column(

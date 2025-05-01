@@ -13,12 +13,17 @@ class EditProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 31, 172, 85),
+        toolbarHeight: 90,
+        backgroundColor: const Color(0xFF2ECC40),
         elevation: 0,
         leading: const BackButton(color: Colors.white),
         title: const Text(
-          "Edit Profile",
-          style: TextStyle(color: Colors.white),
+          "Edit Profile,",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         centerTitle: true,
       ),

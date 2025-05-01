@@ -6,8 +6,28 @@ import 'package:parkirtime/screens/checklot/checklotpage.dart';
 import 'package:parkirtime/screens/reservation/ReservasionPage.dart';
 import 'package:parkirtime/screens/ticket_page.dart';
 
-class HomePageContent extends StatelessWidget {
-  final List<Map<String, dynamic>> vehicles = []; // Dummy list kendaraan
+class HomePageContent extends StatefulWidget {
+  @override
+  _HomePageContentState createState() => _HomePageContentState();
+}
+
+class _HomePageContentState extends State<HomePageContent> {
+  List<Map<String, dynamic>> vehicles = [];
+  bool isLoading = false;
+
+  Future<void> _onRefresh() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await Future.delayed(const Duration(seconds: 2)); // simulasi loading
+
+    // Di sini kamu bisa fetch data kendaraan dan parkir dari backend nanti
+
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,108 +134,122 @@ class HomePageContent extends StatelessWidget {
     return Container(
       color: const Color.fromARGB(255, 235, 229, 229),
       padding: const EdgeInsets.only(top: 100),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // My Car Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "My Car",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  GestureDetector(
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ManageVehiclePage(),
-                          ),
-                        ),
-                    child: const Text(
-                      "Manage Vehicle",
+      child: RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // My Car Section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "My Car",
                       style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF2ECC40),
-                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 15),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child:
-                  vehicles.isEmpty
-                      ? Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6,
-                              offset: Offset(0, 3),
+                    GestureDetector(
+                      onTap:
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ManageVehiclePage(),
                             ),
-                          ],
+                          ),
+                      child: const Text(
+                        "Manage Vehicle",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF2ECC40),
+                          fontWeight: FontWeight.w600,
                         ),
-                        child: Row(
-                          children: const [
-                            Icon(
-                              Icons.directions_car,
-                              size: 50,
-                              color: Colors.grey,
-                            ),
-                            SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                "No cars added yet",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 15),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child:
+                    vehicles.isEmpty
+                        ? Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                'assets/mobil.png', // ganti dengan gambar mobilmu
+                                height: 50,
+                                width: 50,
+                                fit: BoxFit.contain,
+                              ),
+                              const SizedBox(width: 12),
+                              Container(
+                                width: 1,
+                                height: 40,
+                                color: Colors.grey.shade400,
+                              ),
+                              const SizedBox(width: 12),
+                              const Expanded(
+                                child: Text(
+                                  "No cars added yet",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black54,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                      : VehicleCard(),
-            ),
-            const SizedBox(height: 45),
+                            ],
+                          ),
+                        )
+                        : VehicleCard(),
+              ),
+              const SizedBox(height: 45),
 
-            // Parking Spot
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 29),
-              child: const Text(
-                "Parking Spot",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              // Parking Spot Section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 29),
+                child: const Text(
+                  "Parking Spot",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              height: 160,
-              padding: const EdgeInsets.only(left: 20),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _buildParkingCard("Mega Mall", 31),
-                  const SizedBox(width: 15),
-                  _buildParkingCard("Grand Mall", 12),
-                  const SizedBox(width: 15),
-                  _buildParkingCard("Nagoya Hill", 7),
-                ],
+              const SizedBox(height: 10),
+              Container(
+                height: 170,
+                padding: const EdgeInsets.only(left: 20),
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    _buildParkingCard("Mega Mall", 31),
+                    const SizedBox(width: 15),
+                    _buildParkingCard("Grand Mall", 12),
+                    const SizedBox(width: 15),
+                    _buildParkingCard("Nagoya Hill", 7),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -223,7 +257,7 @@ class HomePageContent extends StatelessWidget {
 
   Widget _buildParkingCard(String title, int available) {
     return Container(
-      width: 130,
+      width: 140,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         boxShadow: [

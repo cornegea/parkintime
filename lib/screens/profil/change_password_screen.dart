@@ -19,13 +19,18 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     return Scaffold(
       backgroundColor: Color(0xFFF2F2F2), // background abu terang
       appBar: AppBar(
+        toolbarHeight: 90,
         backgroundColor: Color(0xFF2ECC40), // hijau terang
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text("Change Password", style: TextStyle(color: Colors.white)),
+        title: Text("Change Password", style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),),
         centerTitle: true,
       ),
       body: Padding(

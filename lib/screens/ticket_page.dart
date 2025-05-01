@@ -8,15 +8,22 @@ class TicketPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.green,
       appBar: AppBar(
+        toolbarHeight: 90,
         backgroundColor: Colors.green,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Ticket', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          "Ticket",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: Container(
         width: double.infinity,

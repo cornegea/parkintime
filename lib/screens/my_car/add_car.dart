@@ -41,12 +41,22 @@ class _AddCarScreenState extends State<AddCarScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
+        toolbarHeight: 90,
         backgroundColor: Colors.green,
-        title: const Text("Add Car", style: TextStyle(color: Colors.white)),
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
+        title: const Text(
+          "Add Car",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

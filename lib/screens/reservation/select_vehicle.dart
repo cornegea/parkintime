@@ -10,10 +10,14 @@ class _SelectVehiclePageState extends State<SelectVehiclePage> {
   int? selectedVehicleIndex;
 
   final List<Map<String, String>> vehicles = [
-    {"brand": "Daihatsu", "plate": "BP 1234 AA", "image": "assets/car.png"},
-    {"brand": "Toyota", "plate": "BP 2341 AA", "image": "assets/car.png"},
-    {"brand": "Honda Civic", "plate": "BP 3412 AA", "image": "assets/car.png"},
-    {"brand": "Hyundai", "plate": "BP 4123 AA", "image": "assets/car.png"},
+    {"brand": "Daihatsu", "plate": "BP 1234 AA", "image": "assets/mobil.png"},
+    {"brand": "Toyota", "plate": "BP 2341 AA", "image": "assets/mobil.png"},
+    {
+      "brand": "Honda Civic",
+      "plate": "BP 3412 AA",
+      "image": "assets/mobil.png",
+    },
+    {"brand": "Hyundai", "plate": "BP 4123 AA", "image": "assets/mobil.png"},
   ];
 
   @override
@@ -21,10 +25,22 @@ class _SelectVehiclePageState extends State<SelectVehiclePage> {
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
       appBar: AppBar(
-        toolbarHeight: 100,
+       toolbarHeight: 90,
         backgroundColor: Colors.green,
-        title: Text("Select Your Vehicle"),
-        leading: BackButton(color: Colors.white),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Select  Your Vehicle",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Column(

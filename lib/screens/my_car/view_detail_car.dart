@@ -10,10 +10,24 @@ class ViewDetailCarPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        toolbarHeight: 90,
         backgroundColor: Colors.green,
-        title: const Text("Manage Car"),
-        leading: const BackButton(color: Colors.white),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Manage Car",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

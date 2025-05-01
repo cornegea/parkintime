@@ -114,10 +114,8 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
     required String year,
     required String plateColor,
   }) {
-    final isPlateColorWhite = plateColor.toLowerCase() == 'putih';
-
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -128,13 +126,13 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
         children: [
           Text(
             plate,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          Divider(height: 32, color: Colors.grey.shade300),
+          Divider(height: 24, color: Colors.grey.shade300),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset("assets/car.png", height: 60),
+              Image.asset("assets/mobil.png", width: 80, height: 80),
               SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -145,17 +143,13 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
                     _buildDetailRow("Category", category),
                     _buildDetailRow("Color", color),
                     _buildDetailRow("Manufacture Year", year),
-                    _buildDetailRow(
-                      "License Plate Color",
-                      plateColor,
-                      overrideColor: isPlateColorWhite ? Colors.black87 : null,
-                    ),
+                    _buildDetailRow("License Plate Color", plateColor),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -183,10 +177,10 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF2ECC40),
-                padding: EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
+                padding: EdgeInsets.symmetric(vertical: 14),
               ),
               child: Text(
                 "View Detail",
@@ -203,26 +197,30 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
     );
   }
 
-  Widget _buildDetailRow(String label, String value, {Color? overrideColor}) {
+  Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: 4),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Text(
               label,
-              style: TextStyle(color: Colors.black54, fontSize: 13),
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 12, // Ukuran diperkecil
+              ),
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Text(
               value.toUpperCase(),
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 13,
-                color: overrideColor,
+                fontSize: 12, // Ukuran diperkecil
+                color: Colors.black87,
               ),
             ),
           ),
@@ -236,7 +234,7 @@ class _ManageVehiclePageState extends State<ManageVehiclePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset("assets/images/empty_car.png", width: 150, height: 150),
+          Icon(Icons.directions_car_filled, size: 100, color: Colors.grey[400]),
           SizedBox(height: 16),
           Text(
             "No cars added yet",
