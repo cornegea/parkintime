@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'halaman_home/home_screen.dart';
 import 'register_screen.dart';
 
@@ -13,68 +14,72 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _obscureText = true;
+  bool _isLoading = false;
 
   Future<void> login() async {
     final String email = emailController.text.trim();
     final String password = passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Please fill in all fields')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill in all fields')),
+      );
       return;
     }
 
+    setState(() => _isLoading = true);
+
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.5/flutter_api/login.php'),
+        Uri.parse('https://app.parkintime.web.id/flutter/login.php'),
         body: {'email': email, 'password': password},
       );
 
+      setState(() => _isLoading = false);
+
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
+        final data = jsonDecode(response.body);
         if (data['success']) {
-          // Login sukses, pakai animasi transisi
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt('id_akun', data['data']['id_akun']);
+          await prefs.setString('user_name', data['data']['name']);
+          await prefs.setString('user_email', data['data']['email']);
+          await prefs.setBool('is_logged_in', true); // ⬅️ Tambahkan baris ini
+
           Navigator.of(context).pushReplacement(
             PageRouteBuilder(
               transitionDuration: Duration(milliseconds: 600),
-              pageBuilder:
-                  (context, animation, secondaryAnimation) => HomeScreen(),
-              transitionsBuilder: (
-                context,
-                animation,
-                secondaryAnimation,
-                child,
-              ) {
-                final tween = Tween<Offset>(
-                  begin: Offset(1.0, 0.0),
-                  end: Offset.zero,
-                );
-                final curvedAnimation = CurvedAnimation(
-                  parent: animation,
-                  curve: Curves.ease,
-                );
+              pageBuilder: (_, __, ___) => HomeScreen(),
+              transitionsBuilder: (_, animation, __, child) {
                 return SlideTransition(
-                  position: tween.animate(curvedAnimation),
+                  position: Tween<Offset>(
+                    begin: Offset(1.0, 0.0),
+                    end: Offset.zero,
+                  ).animate(CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.ease,
+                  )),
                   child: child,
                 );
               },
             ),
           );
-        } else {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Email atau Password salah!')));
+        }
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(data['message'] ?? 'Login failed')),
+          );
         }
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Server error')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Server error')),
+        );
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Tidak bisa terhubung ke server')));
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Tidak bisa terhubung ke server')),
+      );
     }
   }
 
@@ -83,7 +88,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background
           Container(
             height: MediaQuery.of(context).size.height * 0.5,
             decoration: BoxDecoration(
@@ -115,9 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(30),
-                    ),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black26,
@@ -131,10 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         "Sign In to Your\nAccount",
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 20),
                       TextField(
@@ -164,20 +163,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           prefixIcon: Icon(Icons.lock),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscureText
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
+                              _obscureText ? Icons.visibility_off : Icons.visibility,
                             ),
-                            onPressed: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
+                            onPressed: () => setState(() => _obscureText = !_obscureText),
                           ),
                         ),
                       ),
                       SizedBox(height: 25),
-                      SizedBox(
+                      _isLoading
+                          ? Center(child: CircularProgressIndicator())
+                          : SizedBox(
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
@@ -197,59 +192,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
-                            onPressed: () {
-                              // Aksi untuk forgot password, nanti bisa dikembangkan
-                            },
-                            child: Text(
-                              "Forgot Password?",
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 14,
-                              ),
-                            ),
+                            onPressed: () {},
+                            child: Text("Forgot Password?", style: TextStyle(color: Colors.green)),
                           ),
                           TextButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  transitionDuration: Duration(
-                                    milliseconds: 600,
-                                  ),
-                                  pageBuilder:
-                                      (
-                                        context,
-                                        animation,
-                                        secondaryAnimation,
-                                      ) => RegisterScreen(),
-                                  transitionsBuilder: (
-                                    context,
-                                    animation,
-                                    secondaryAnimation,
-                                    child,
-                                  ) {
-                                    final tween = Tween<Offset>(
-                                      begin: Offset(1.0, 0.0),
-                                      end: Offset.zero,
-                                    );
-                                    final curvedAnimation = CurvedAnimation(
-                                      parent: animation,
-                                      curve: Curves.ease,
-                                    );
-                                    return SlideTransition(
-                                      position: tween.animate(curvedAnimation),
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            child: Text(
-                              "Create Account",
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 14,
-                              ),
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => RegisterScreen()),
                             ),
+                            child: Text("Create Account", style: TextStyle(color: Colors.green)),
                           ),
                         ],
                       ),

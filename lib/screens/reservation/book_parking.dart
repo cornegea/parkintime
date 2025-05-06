@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
-import 'package:parkirtime/screens/reservation/select_spot_parkir.dart';
+import 'package:parkintime/screens/reservation/select_spot_parkir.dart';
 
 class BookParkingDetailsPage extends StatefulWidget {
   final int pricePerHour;
@@ -31,22 +31,9 @@ class _BookParkingDetailsPageState extends State<BookParkingDetailsPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        toolbarHeight: 90,
+        title: const Text('Book Parking Details'),
         backgroundColor: Colors.green,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          "Book Parking Details",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
+        leading: const BackButton(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Column(

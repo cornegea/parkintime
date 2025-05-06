@@ -1,38 +1,79 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:parkirtime/screens/checklot/information_spot_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:parkintime/screens/checklot/information_spot_page.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class CheckLotPage extends StatelessWidget {
-  final List<Map<String, dynamic>> parkingData = [
-    {
-      "name": "Grand Batam Mall",
-      "address": "Jl. Pembangunan, Batu Selicin, Lubuk Baja",
-      "price": "Rp 5.000",
-      "capacity": "80/100",
-      "status": "Tersedia",
-    },
-    {
-      "name": "Mega Mall Batam Center",
-      "address": "Jl. Engku Putri No.1, Belian, Kec. Batam Kota",
-      "price": "Rp 5.000",
-      "capacity": "95/100",
-      "status": "Hampir Penuh",
-    },
-    {
-      "name": "Nagoya Hill Mall",
-      "address": "Jl. Nagoya Hill, Lubuk Baja Kota, Kec. Lubuk Baja",
-      "price": "Rp 5.000",
-      "capacity": "100/100",
-      "status": "Penuh",
-    },
-  ];
+class CheckLotPage extends StatefulWidget {
+  const CheckLotPage({Key? key}) : super(key: key);
+
+  @override
+  State<CheckLotPage> createState() => _CheckLotPageState();
+}
+
+class _CheckLotPageState extends State<CheckLotPage> {
+  List<Map<String, dynamic>> parkingData = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchParkingData();
+  }
+
+  Future<void> fetchParkingData() async {
+    final response = await http.get(
+      Uri.parse('https://app.parkintime.web.id/flutter/get_lahan.php'),
+    );
+
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body);
+      if (body['success']) {
+        final List<dynamic> data = body['data'];
+        setState(() {
+          parkingData = data.map((e) {
+            int kapasitas = int.tryParse(e['kapasitas'].toString()) ?? 0;
+            int terisi = int.tryParse(e['terisi'].toString()) ?? 0;
+            String status = "Tersedia";
+            double persen = terisi / kapasitas;
+
+            if (persen >= 1.0) {
+              status = "Penuh";
+            } else if (persen >= 0.9) {
+              status = "Hampir Penuh";
+            }
+
+            return {
+              "id": e['id'],
+              "name": e['nama_lokasi'],
+              "address": e['alamat'],
+              "price": "Rp ${e['tarif_per_jam']}",
+              "capacity": "$terisi/$kapasitas",
+              "status": status,
+              "foto": e['foto'],
+            };
+          }).toList();
+          isLoading = false;
+        });
+      }
+    } else {
+      setState(() => isLoading = false);
+    }
+  }
+  String _limitWords(String text, int maxWords) {
+    final words = text.split(' ');
+    if (words.length <= maxWords) return text;
+    return words.sublist(0, maxWords).join(' ') + '...';
+  }
 
   Color _statusColor(String status) {
     switch (status) {
-      case "Tersedia":
+      case "Available":
         return Colors.green.shade100;
-      case "Hampir Penuh":
+      case "Almost Full":
         return Colors.orange.shade100;
-      case "Penuh":
+      case "Full":
         return Colors.red.shade100;
       default:
         return Colors.grey.shade200;
@@ -41,11 +82,11 @@ class CheckLotPage extends StatelessWidget {
 
   Color _statusTextColor(String status) {
     switch (status) {
-      case "Tersedia":
+      case "Available":
         return Colors.green;
-      case "Hampir Penuh":
+      case "Almost Full":
         return Colors.orange;
-      case "Penuh":
+      case "Full":
         return Colors.red;
       default:
         return Colors.grey;
@@ -59,20 +100,15 @@ class CheckLotPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Color(0xFF2ECC40),
         elevation: 0,
-        title: const Text(
-          'Check Lot',
-          style: TextStyle(
-            fontSize: 20,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: const Text('Check Lot', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Column(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Column(
         children: [
           Container(
             padding: const EdgeInsets.all(16),
@@ -83,7 +119,6 @@ class CheckLotPage extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.white,
                 prefixIcon: Icon(Icons.search),
-                contentPadding: EdgeInsets.symmetric(vertical: 0),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide.none,
@@ -117,18 +152,13 @@ class CheckLotPage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            item["name"],
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
+                          Text(item["name"],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16)),
                           Container(
                             padding: EdgeInsets.symmetric(
-                              vertical: 4,
-                              horizontal: 8,
-                            ),
+                                vertical: 4, horizontal: 8),
                             decoration: BoxDecoration(
                               color: _statusColor(item["status"]),
                               borderRadius: BorderRadius.circular(12),
@@ -144,26 +174,22 @@ class CheckLotPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
-                        item["address"],
+                        _limitWords(item["address"], 6),
                         style: TextStyle(color: Colors.grey[700]),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Tarif per jam\n${item["price"]}",
-                            style: TextStyle(fontSize: 13),
-                          ),
-                          Text(
-                            "Kapasitas\n${item["capacity"]}",
-                            style: TextStyle(fontSize: 13),
-                          ),
+                          Text("Hourly rate\n${item["price"]}",
+                              style: TextStyle(fontSize: 13)),
+                          Text("Capacity\n${item["capacity"]}",
+                              style: TextStyle(fontSize: 13)),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12),
                       Row(
                         children: [
                           Expanded(
@@ -172,7 +198,8 @@ class CheckLotPage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => InformationSpotPage(),
+                                    builder: (_) =>
+                                        InformationSpotPage(), // bisa kirim data id lokasi
                                   ),
                                 );
                               },
@@ -185,15 +212,21 @@ class CheckLotPage extends StatelessWidget {
                               child: Text("Select"),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12),
                           IconButton(
-                            icon: Icon(Icons.navigation, color: Colors.green),
+                            icon: Icon(Icons.navigation,
+                                color: Colors.green),
                             onPressed: () {},
                           ),
                           IconButton(
                             icon: Icon(Icons.share, color: Colors.green),
-                            onPressed: () {},
+                            onPressed: () {
+                              final message =
+                                  "Parkir tersedia di ${item["name"]}, alamat: ${item["address"]}, tarif: ${item["price"]}, kapasitas: ${item["capacity"]}.";
+                              Share.share(message);
+                            },
                           ),
+
                         ],
                       ),
                     ],

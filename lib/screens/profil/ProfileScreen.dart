@@ -1,25 +1,65 @@
 import 'package:flutter/material.dart';
-import 'package:parkirtime/screens/profil/edit_profile_screen.dart';
-import 'package:parkirtime/screens/profil/change_password_screen.dart';
-import 'package:parkirtime/screens/my_car/mycar_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:parkintime/screens/profil/edit_profile_screen.dart';
+import 'package:parkintime/screens/profil/change_password_screen.dart';
+import 'package:parkintime/screens/my_car/mycar_page.dart';
+import 'package:parkintime/screens/login_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String name = '';
+  String email = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = _capitalize(prefs.getString('user_name') ?? '');
+      email = prefs.getString('user_email') ?? '';
+    });
+  }
+
+  String _capitalize(String text) {
+    if (text.isEmpty) return '';
+    return text.split(' ').map((word) {
+      if (word.isEmpty) return '';
+      return word[0].toUpperCase() + word.substring(1);
+    }).join(' ');
+  }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_id');  // Hapus user_id jika ada
+    await prefs.remove('token');  // Hapus token
+    await prefs.setBool('is_logged_in', false);  // Tandai bahwa pengguna telah logout
+
+    // Setelah logout, arahkan pengguna kembali ke halaman login
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()), // Ganti dengan LoginScreen
+          (Route<dynamic> route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F3F3),
       body: Column(
         children: [
-          // Header Hijau
           Container(
             width: double.infinity,
             color: const Color(0xFF2ECC40),
-            padding: const EdgeInsets.only(
-              top: 40,
-              bottom: 20,
-              left: 16,
-              right: 16,
-            ),
+            padding: const EdgeInsets.only(top: 40, bottom: 20, left: 16, right: 16),
             child: Row(
               children: [
                 const CircleAvatar(
@@ -30,76 +70,57 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
-                      "Ayang",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      name,
+                      style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      "ayang@email.com",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                      email,
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   ],
                 ),
               ],
             ),
           ),
-          SizedBox(height: 20),
-          // Menu Card
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
-                  ),
-                ],
+                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))],
               ),
               child: Column(
                 children: [
                   _buildMenuItem(Icons.person_outline, "Edit Profile", () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => EditProfileScreen(),
-                      ),
-                    );
+                      MaterialPageRoute(builder: (context) => EditProfileScreen()),
+                    ).then((_) => _loadUserInfo());
                   }),
                   const Divider(height: 1),
                   _buildMenuItem(Icons.lock_outline, "Change Password", () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => ChangePasswordScreen(),
-                      ),
+                      MaterialPageRoute(builder: (context) => ChangePasswordScreen()),
                     );
                   }),
                   const Divider(height: 1),
                   _buildMenuItem(Icons.directions_car, "My Car", () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => ManageVehiclePage(),
-                      ),
+                      MaterialPageRoute(builder: (context) => ManageVehiclePage()),
                     );
                   }),
                 ],
               ),
             ),
           ),
-
-          SizedBox(height: 20),
-          // Logout Button
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: SizedBox(
@@ -107,20 +128,11 @@ class ProfileScreen extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(
-                    0xFFFF3B30,
-                  ), // Warna merah terang
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+                  backgroundColor: const Color(0xFFFF3B30),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  "Log Out",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
+                onPressed: logout, // Menambahkan logika logout
+                child: const Text("Log Out", style: TextStyle(color: Colors.white, fontSize: 16)),
               ),
             ),
           ),

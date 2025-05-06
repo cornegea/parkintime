@@ -175,7 +175,7 @@ class _InformationSpotPageState extends State<InformationSpotPage> {
               child:
                   hasCar[index]
                       ? Image.asset(
-                        'assets/carslot.png',
+                        'assets/car.png',
                       ) // Gambar mobil tampak atas
                       : Center(
                         child: Text(

@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ViewDetailCarPage extends StatelessWidget {
   final Map<String, String> carData;
@@ -10,24 +12,10 @@ class ViewDetailCarPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        toolbarHeight: 90,
         backgroundColor: Colors.green,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          "Manage Car",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
+        title: const Text("Manage Car"),
+        leading: const BackButton(color: Colors.white),
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -63,7 +51,7 @@ class ViewDetailCarPage extends StatelessWidget {
             const SizedBox(height: 6),
             const TextField(
               decoration: InputDecoration(
-                hintText: '9999',
+                hintText: '',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -115,66 +103,93 @@ class ViewDetailCarPage extends StatelessWidget {
   void _showDeleteConfirmation(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (_) => Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            insetPadding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+      builder: (_) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 40),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.red.shade100,
+                ),
+                child: const Icon(Icons.close, color: Colors.red, size: 40),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "Are you sure you want to remove this vehicle?",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 24),
+              Row(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.red.shade100,
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.grey),
+                        backgroundColor: Colors.grey.shade300,
+                      ),
+                      child: const Text("Cancel", style: TextStyle(color: Colors.black)),
                     ),
-                    child: const Icon(Icons.close, color: Colors.red, size: 40),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Are you sure you want to remove this vehicle",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.grey),
-                            backgroundColor: Colors.grey.shade300,
-                          ),
-                          child: const Text(
-                            "Cancel",
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            // TODO: Tambahkan fungsi hapus kendaraan di sini
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                          ),
-                          child: const Text("Remove"),
-                        ),
-                      ),
-                    ],
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        await _deleteCar(context);
+                      },
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      child: const Text("Remove"),
+                    ),
                   ),
                 ],
               ),
-            ),
+            ],
           ),
+        ),
+      ),
     );
+  }
+
+  Future<void> _deleteCar(BuildContext context) async {
+    final String carId = carData['carId'] ?? '';
+
+    if (carId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Invalid car ID")),
+      );
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://app.parkintime.web.id/flutter/delete_car.php'),
+        body: {'id': carId},
+      );
+
+      final result = jsonDecode(response.body);
+
+      if (result['status']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Car removed successfully")),
+        );
+        Navigator.of(context).pop(true); // kembali dan trigger refresh
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result['message'] ?? 'Failed to remove car')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 }

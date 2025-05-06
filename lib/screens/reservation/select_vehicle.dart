@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkirtime/screens/reservation/book_parking.dart';
+import 'package:parkintime/screens/reservation/book_parking.dart';
 
 class SelectVehiclePage extends StatefulWidget {
   @override
@@ -10,14 +10,10 @@ class _SelectVehiclePageState extends State<SelectVehiclePage> {
   int? selectedVehicleIndex;
 
   final List<Map<String, String>> vehicles = [
-    {"brand": "Daihatsu", "plate": "BP 1234 AA", "image": "assets/mobil.png"},
-    {"brand": "Toyota", "plate": "BP 2341 AA", "image": "assets/mobil.png"},
-    {
-      "brand": "Honda Civic",
-      "plate": "BP 3412 AA",
-      "image": "assets/mobil.png",
-    },
-    {"brand": "Hyundai", "plate": "BP 4123 AA", "image": "assets/mobil.png"},
+    {"brand": "Daihatsu", "plate": "BP 1234 AA", "image": "assets/car.png"},
+    {"brand": "Toyota", "plate": "BP 2341 AA", "image": "assets/car.png"},
+    {"brand": "Honda Civic", "plate": "BP 3412 AA", "image": "assets/car.png"},
+    {"brand": "Hyundai", "plate": "BP 4123 AA", "image": "assets/car.png"},
   ];
 
   @override
@@ -25,22 +21,10 @@ class _SelectVehiclePageState extends State<SelectVehiclePage> {
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
       appBar: AppBar(
-       toolbarHeight: 90,
+        toolbarHeight: 100,
         backgroundColor: Colors.green,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          "Select  Your Vehicle",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
+        title: Text("Select Your Vehicle"),
+        leading: BackButton(color: Colors.white),
       ),
       body: SafeArea(
         child: Column(

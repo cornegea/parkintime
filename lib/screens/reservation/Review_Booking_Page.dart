@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkirtime/screens/ticket_page.dart';
+import 'package:parkintime/screens/ticket_page.dart';
 
 class ReviewBookingPage extends StatefulWidget {
   final String parkingArea;
@@ -57,22 +57,9 @@ class _ReviewBookingPageState extends State<ReviewBookingPage> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 90,
+        title: const Text('Review Booking'),
         backgroundColor: Colors.green,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          "Review Booking",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

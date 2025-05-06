@@ -1,79 +1,47 @@
 import 'package:flutter/material.dart';
 
 class VehicleCard extends StatelessWidget {
-  final bool isEmpty;
+  final String plate;
+  final String brand;
+  final String type;
+  final String color;
 
-  const VehicleCard({this.isEmpty = false, super.key});
+  const VehicleCard({
+    required this.plate,
+    required this.brand,
+    required this.type,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
-    if (isEmpty) {
-      return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 3,
-              offset: const Offset(0, 1),
-            ),
-          ],
-        ),
-        child: Row(
-          children: const [
-            Icon(Icons.directions_car_outlined, size: 48, color: Colors.grey),
-            SizedBox(width: 15),
-            Text(
-              "No cars added yet",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Tampilan default (dengan data kendaraan)
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(15),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 3,
-            offset: const Offset(0, 1),
-          ),
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 3),
+          )
         ],
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.directions_car_outlined,
-            size: 48,
-            color: Colors.grey,
-          ),
-          const SizedBox(width: 15),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                "TOYOTA CIVIC NISMO GTR",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              SizedBox(height: 5),
-              Text(
-                "BP 121 AN",
-                style: TextStyle(
-                  color: Colors.green,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
+          const Icon(Icons.directions_car, size: 40, color: Colors.grey),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(plate, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text("$brand $type", style: const TextStyle(color: Colors.black54)),
+                Text("Color: $color", style: const TextStyle(color: Colors.black54)),
+              ],
+            ),
           ),
         ],
       ),

@@ -4,8 +4,8 @@ import 'screens/halaman_home/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/splash_screen.dart';
-import 'screens/history/historyscreen.dart'; // Tambahkan HistoryScreen// Tambahkan MyCarScreen
-import 'screens/profil/profilescreen.dart'; // Tambahkan ProfileScreen
+import 'screens/history/historyscreen.dart';
+import 'screens/profil/profilescreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,15 +17,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'ParkInTime',
-      initialRoute: '/', // Halaman pertama yang dibuka (Splash Screen)
+      initialRoute: '/', // Splash screen pertama
       routes: {
         '/': (context) => SplashScreen(),
         '/onboarding': (context) => OnboardingScreen(),
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
         '/home': (context) => HomeScreen(),
-        '/history': (context) => HistoryScreen(), // Tambahkan route History
-        '/profile': (context) => ProfileScreen(), // Tambahkan route Profile
+        '/history': (context) => HistoryScreen(),
+        '/profile': (context) => ProfileScreen(),
       },
     );
   }
