@@ -62,8 +62,9 @@ class _HomePageContentState extends State<HomePageContent> {
         final data = jsonDecode(response.body);
         if (data['success'] == true) {
           final fullName = data['nama_lengkap'] ?? 'User';
+          final trimmedName = _limitWords(_capitalizeEachWord(fullName), 3);
           setState(() {
-            _userName = _capitalizeEachWord(fullName);
+            _userName = trimmedName;
           });
         } else {
           setState(() => _userName = 'User');
@@ -105,6 +106,11 @@ class _HomePageContentState extends State<HomePageContent> {
       if (word.isEmpty) return word;
       return word[0].toUpperCase() + word.substring(1).toLowerCase();
     }).join(' ');
+  }
+  String _limitWords(String text, int maxWords) {
+    final words = text.split(' ');
+    if (words.length <= maxWords) return text;
+    return words.sublist(0, maxWords).join(' ') + '...';
   }
 
   @override

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 
 class InformationSpotPage extends StatefulWidget {
+  final String id;
+
+  const InformationSpotPage({Key? key, required this.id}) : super(key: key);
+
   @override
   _InformationSpotPageState createState() => _InformationSpotPageState();
 }
+
 
 class _InformationSpotPageState extends State<InformationSpotPage> {
   int selectedFloor = 1;
